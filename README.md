@@ -14,7 +14,7 @@ This script used https://learn.adafruit.com/adafruit-magtag/getting-the-date-tim
 
 The original script gets the Adafruit IO Time Service and just prints the response to the REPL, not onto the MAGTAG!
 My modified version uses the Adafruit IO Time Service to set and, at intervals of one hour, synchronizes the built-in RTC of the MAGTAG.
-The script displays the received response data on the MAGTAG display at one minute intervals.
+The script displays the built-in RTC's datetime data on the MAGTAG display at one minute intervals.
 
 This version of the original script has various modifications:
 1) This script uses a modified version of adafruit_portalbase/wifi_esp32s2.py. In the file wifi_esp32s2.py I added six functions.

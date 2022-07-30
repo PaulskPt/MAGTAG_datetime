@@ -23,6 +23,8 @@
 # (this means they are integrated into the circuitpython UF2)
 # and magtag.py has the following import: from Adafruit_portalbase import PortalBase'
 #
+# LICENSE: MIT (see file: LICENSE)
+#
 import time
 import secrets
 from adafruit_magtag.magtag import MagTag

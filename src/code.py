@@ -1,29 +1,27 @@
 # 2022-07-30 14h34 PT. Modified the MAGTAG date_and_time script for:
 # (c) 2022 Paulus Schulinck, Github @PaulskPt
 #
-# Updated the CircuitPython firmware to Version 8.0.0-alpha.1
-# Updated all Adafruit CircuitPython libraries uses to the version 8.0 of date 2022-07-30.
 # Using less global variables by introducing a classs my_data.
 # Also trying to get rid of regular crashing of the app (maybe because of a memory leak)
-# Adding algorithm to set, update and use the datetime of the built-in RTC. 
-# The built_in RTC's datetime will be set with data 
+# Adding algorithm to set, update and use the datetime of the built-in RTC.
+# The built_in RTC's datetime will be set with data
 # extracted from the Adafruit IO Time Service response.
 # After initialization at start time, the built-in RTC will be synchronized every hour.
 # The datetime from the built-in RTC will be displayed on the MAGTAG every minute.
 #
 # MagTag date and time circuitpython script
 # modified by @Paulskpt
-# Version of 2022-03-13
-# MAGTAG flashed with TinyUF2 Bootloader version: 0.8.0
-# MAGTAG flashed with CircuitPython version: 5.2.0
+
+# MAGTAG flashed with TinyUF2 Bootloader 0.8.0 - tinyusb (0.12.0-203-ga4cfd1c6)
+# Model: Adafruit MagTag 2.9 Grayscale
+# Board-ID: ESP32S2-MagTag_29gray-revC
+# Date: Jan  5 2022
+
+# MAGTAG flashed with Adafruit CircuitPython 8.0.0-alpha.1 on 2022-06-09; Adafruit MagTag with ESP32S2
+
 # Using library files from:
-#    a) https://github.com/adafruit/Adafruit_CircuitPython_Bundle/adafruit-circuitpython-bundle-7.x-mpy-20220312.zip and from
-#    b) https://github.com/adafruit/Adafruit_CircuitPython_Bundle/adafruit-circuitpython-bundle-py-20220312.zip
-# IMPORTANT NOTE !!!
-# Keep the library folder 'Adafruit_portalbase' (containing functions added by me) in the root folder '/',
-# because Adafruit put an Adafruit_portalbase library containing a 'PortalBase' module into 'frozen'
-# (this means they are integrated into the circuitpython UF2)
-# and magtag.py has the following import: from Adafruit_portalbase import PortalBase'
+#    a) https://github.com/adafruit/Adafruit_CircuitPython_Bundle/adafruit-circuitpython-bundle-8.x-mpy-20220730.zip and from
+#    b) https://github.com/adafruit/Adafruit_CircuitPython_Bundle/adafruit-circuitpython-bundle-py-20220730.zip
 #
 # LICENSE: MIT (see file: LICENSE)
 #
@@ -31,14 +29,14 @@ import time
 import secrets
 from adafruit_magtag.magtag import MagTag
 import gc, os
-from adafruit_portalbase.wifi_esp32s2 import WiFi
+import rtc
+
 import ipaddress
 import ssl
 import wifi
 import socketpool
 import adafruit_requests
-import rtc
-
+    
 tm_year = 0
 tm_mon = 1
 tm_mday=2
@@ -96,10 +94,6 @@ my_dat = my_data()
 
 magtag = MagTag()
 
-my_wifi = WiFi()  # create an instance of WiFi class
-#print("dir(my_wifi) = ", dir(my_wifi))
-# Get wifi details and more from a secrets.py file
-
 rtc_bi = rtc.RTC() # Create an instance of the built_in RTC
 
 my_dat.write(_debug, False)
@@ -144,14 +138,8 @@ def mem_stat():
     print(s)
 
 def setup():
-    # global my_wifi
-
-    mem_stat()
-
     TAG = "setup():     "
-    TEXT_URL = "http://wifitest.adafruit.com/testwifi/index.html"
-    JSON_QUOTES_URL = "https://www.adafruit.com/api/quotes.php"
-    JSON_STARS_URL = "https://api.github.com/repos/adafruit/circuitpython"
+    mem_stat()
     my_debug = my_dat.read(_debug)
     requests = my_dat.read(_requests)
     #TIME_URL = my_dat.read(_time_url)
@@ -176,87 +164,53 @@ def setup():
     #my_dat.write(_same_time_cnt,0)
 
     print("ESP32-S2 Adafruit IO Time test")
-
-    my_mac = my_wifi.get_mac_address()
-    #my_mac = wifi.radio.mac_address
-    ap_mac = my_wifi.get_mac_address_ap()
-    #ap_mac = wifi.radio.mac_address_ap
+    my_mac = wifi.radio.mac_address
+    ap_mac = wifi.radio.mac_address_ap
     if not my_debug:
         print(TAG+"My MAC address: \'{:x}:{:x}:{:x}:{:x}:{:x}:{:x}\'".format(my_mac[0],my_mac[1],my_mac[2],my_mac[3],my_mac[4],my_mac[5]), end='\n')
         print(TAG+"AP MAC address: \'{:x}:{:x}:{:x}:{:x}:{:x}:{:x}\'".format(ap_mac[0],ap_mac[1],ap_mac[2],ap_mac[3],ap_mac[4],ap_mac[5]), end='\n')
 
     if my_debug:
-        print("Available WiFi networks:")
-        my_wifi.do_scan()
+        print(TAG+"Available WiFi networks:")
+        for network in wifi.radio.start_scanning_networks():
+            print("\t%s\t\tRSSI: %d\tChannel: %d" % (str(network.ssid, "utf-8"),
+                network.rssi, network.channel))
+        wifi.radio.stop_scanning_networks()
+
     print(TAG+"Connecting to %s"%secrets["ssid"])
-
-    my_wifi.connect(secrets["ssid"], secrets["password"])
+    wifi.radio.connect(secrets["ssid"], secrets["password"])
     time.sleep(2)
-    if my_wifi.is_connected:
-        print(TAG+"Connected to %s"%secrets["ssid"])
-        print(TAG+"My IP address is \'{}\'".format(my_wifi.ip_address), end='\n')
-        res = my_wifi.ping("8.8.8.8")
-        time.sleep(1)
-        ipv4 = ipaddress.ip_address("8.8.8.8")
-        #res = wifi.radio.ping(ipv4)
-        if isinstance(res, type(None)):
-            print(TAG+"Ping to \'{}\' failed".format(ipv4))
-            if my_wifi.is_connected:
-                print("I am still connected to ", secrets["ssid"])
-            else:
-                my_wifi.connect(secrets["ssid"], secrets["password"])
-                if my_wifi.is_connected:
-                    print(TAG+"re-connected to ", ssid)
-        else:
-            if my_debug:
-                print(TAG+"Ping to: \'{}\' = {} mSec.".format(ipv4, res))
+    ipv4 = ipaddress.ip_address("8.8.8.8")
+    print(TAG+"Connected to %s!"%secrets["ssid"])
+    print(TAG+"My IP address is", wifi.radio.ipv4_address)
+    print(TAG+"Ping google.com: %f ms" % wifi.radio.ping(ipv4))
 
-        if my_debug:
-            print(TAG+"Fetching text from", end='')
-            print(TIME_URL)
-        pool = socketpool.SocketPool(wifi.radio)
-        requests = adafruit_requests.Session(pool, ssl.create_default_context())
-        my_dat.write(_requests, requests)
-        if my_debug:
-            print(TAG+"type(requests) =",type(requests))
-        if isinstance(requests, type(None)):
-            print(TAG+"failed to create requests object. Exiting...")
-            raise SystemExit
-        response = my_wifi.get_url(TIME_URL)
-        #response = requests.get(TIME_URL)
-        my_dat.write(_response, response)
-        if my_debug and not isinstance(response,  type(None)):
-            print("-" * 40)
-            print(response.text)
-            print("-" * 40)
+    pool = socketpool.SocketPool(wifi.radio)
+    requests = adafruit_requests.Session(pool, ssl.create_default_context())
+    my_dat.write(_requests, requests)
 
-        height = magtag.graphics.display.height -1
-        width  = magtag.graphics.display.width -1
-        my_dat.write(_height, height)
-        my_dat.write(_width, width)
-
-        h0 = height // 6
-        hlist = [h0, h0*3, h0*5]
-
-        for _ in range (3):
-            magtag.add_text(
-                text_position=(
-                    10,
-                    hlist[_],
-                ),
-                text_scale=3,
-            )
-    else:
-        print(TAG+"WiFi failed to connect to", secrets["ssid"])
-        print("trying to connect to", secrets["ssid2"])
-        my_wifi.connect(secrets["ssid2"], secrets["password"])
-        time.sleep(3)
-        if my_wifi.is_connected:
-             print(TAG+"Connected to %s" % secrets["ssid2"])
-        else:
-            print(TAG+"WiFi failed to connect to", secrets["ssid2"])
-            print("Exiting...")
-            raise SystemExit
+    print(TAG+"Fetching text from", TIME_URL)
+    response = requests.get(TIME_URL)
+    my_dat.write(_response, response)
+    if my_debug and response is not None:
+        print("-" * 40)
+        print(TAG+"response.text=",response.text)
+        print("-" * 40)
+        
+    height = magtag.graphics.display.height -1
+    width  = magtag.graphics.display.width -1
+    my_dat.write(_height, height)
+    my_dat.write(_width, width)
+    h0 = height // 6
+    hlist = [h0, h0*3, h0*5]
+    for _ in range (3):
+        magtag.add_text(
+            text_position=(
+                10,
+                hlist[_],
+            ),
+            text_scale=3,
+        )
 
 def get_pr_dt(upd_fm_AIO):
     TAG = "get_pr_dt(): "
@@ -275,15 +229,11 @@ def get_pr_dt(upd_fm_AIO):
             print(TAG+"requests=", requests)
             print(TAG+"TIME_URL=", TIME_URL)
         try:
-            response = my_wifi.get_url(TIME_URL)
-            if not my_debug:
+            response = requests.get(TIME_URL)
+            if my_debug:
                 print(TAG+"response=", response)
                 print(TAG+"response.text=", response.text)
-            if my_debug:
                 print(TAG+"type(requests) = ", type(requests))
-            #response = requests.get(TIME_URL)
-            #if not my_debug:
-            #    print(TAG+"response=", response)
             my_dat.write(_response, response)
         except RuntimeError:
             print(TAG+"RuntimeError occurred. PASS")
@@ -304,13 +254,10 @@ def get_pr_dt(upd_fm_AIO):
                 magtag.set_text(s2, 1, auto_refresh = False)
                 magtag.set_text(s3, 2, auto_refresh = False)
                 magtag.display.refresh() # refresh the display
-
             return False
-
         if isinstance(response, type(None)):
             s = "DATE AND TIME"
             s2 = "UNAVAILABLE"
-
             print(TAG+s+" "+s2)
             magtag.set_text(s, 0, auto_refresh = False)
             magtag.set_text(s2,   1, auto_refresh = False)  # Display error message
@@ -388,7 +335,7 @@ def get_pr_dt(upd_fm_AIO):
     sis_dst = my_dat.read(_dst)
     sDt = "Day of the year: {}, {} {:4d}-{:02d}-{:02d}, {:02d}:{:02d} {} {}".format(yd, weekdays[wd], yy, mo, dd, hh, mm, tz_off,sis_dst)
 
-        #retval = "{}-{:02d}-{:02d} {:02d}:{:02d}:{:02d} {} {} {} {}".format(yy, mo, dd, hh, mm, ss, yd, wd, tz_off, sis_dst)
+    #retval = "{}-{:02d}-{:02d} {:02d}:{:02d}:{:02d} {} {} {} {}".format(yy, mo, dd, hh, mm, ss, yd, wd, tz_off, sis_dst)
 
     if not my_debug:
         print(TAG+"RTC current_time=", ct)
@@ -421,13 +368,14 @@ def get_pr_dt(upd_fm_AIO):
             print(TAG+"type(same_time_cnt)=", type(same_time_cnt))
             print(TAG+"same_time_cnt=", same_time_cnt)
     #s = "time: {}, timzezone: {}".format(tm, tz)
-    for _ in range(3):
-        if _ == 0:
-            magtag.set_text(dt, _, auto_refresh = False)  # Display the date
-        elif _ == 1:
-            magtag.set_text(tm, _, auto_refresh = False)
-        elif _ == 2:
-            magtag.set_text(tz, _, auto_refresh = False)
+    if my_debug:
+        print(TAG+"dt=", dt)
+        print(TAG+"tm=", tm)
+        print(TAG+"tz=", tz)
+    data_items = (dt,tm,tz)
+    for i in range(len(data_items)):
+        itm = data_items[i]
+        magtag.set_text(itm, i, auto_refresh = False)  # Display the dt, tm and tz
     try:
         magtag.display.refresh() # refresh the display
     except RuntimeError:

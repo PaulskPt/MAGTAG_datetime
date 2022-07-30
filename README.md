@@ -12,7 +12,7 @@ a) Adafruit MAGTAG - 2.0 inch Grayscale E-ink WiFi Display (Product ID: 4800) ht
 
 This script used https://learn.adafruit.com/adafruit-magtag/getting-the-date-time as source.
 
-The original script just gets the Adafruit IO Time Service and just prints the response to the REPL, not onto the MAGTAG!
+The original script gets the Adafruit IO Time Service and just prints the response to the REPL, not onto the MAGTAG!
 My modified version uses the Adafruit IO Time Service to set and, at intervals of one hour, synchronizes the built-in RTC of the MAGTAG.
 The script displays the received response data on the MAGTAG display at one minute intervals.
 

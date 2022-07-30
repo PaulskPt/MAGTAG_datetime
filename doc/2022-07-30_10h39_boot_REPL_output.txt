@@ -1,0 +1,46 @@
+2022-07-30 10h39
+
+Platform: MAGTAG
+Script purpose: update built-in RTC from datetime from AIO time server
+                and display datetime every minute from built-in RTC
+
+Mu editor v 1.1.0b7
+
+REPL output: 
+
+soft reboot
+
+Auto-reload is on. Simply save files over USB to run them or enter REPL to disable.
+code.py output:
+
+Memory Info - gc.mem_free()
+---------------------------
+1975456 Bytes
+
+Flash - os.statvfs('/')
+---------------------------
+Size: 963072 Bytes
+Free: 778752 Bytes
+
+---------------------------
+ESP32-S2 Adafruit IO Time test
+setup():     My MAC address: '7c:df:a1:15:1f:42'
+setup():     AP MAC address: '7c:df:a1:15:1f:43'
+setup():     Connecting to Vodafone-287778_EXT
+setup():     Connected to Vodafone-287778_EXT
+setup():     My IP address is '192.168.1.110'
+WiFi.ping(): Ping to: '8.8.8.8' = 0.028 mSec.
+get_pr_dt(): param upd_fm_AIO= True
+get_pr_dt(): sDt= Day of the year: 211, Saturday 2022-07-30 10:39 +0100 WEST
+get_pr_dt(): built-in RTC synchronized from AIO time server
+get_pr_dt(): RTC current_time= struct_time(tm_year=2022, tm_mon=7, tm_mday=30, tm_hour=10, tm_min=39, tm_sec=12, tm_wday=5, tm_yday=211, tm_isdst=-1)
+get_pr_dt(): Weekday= Saturday
+get_pr_dt(): Updated time: '10:39'
+get_pr_dt(): type(same_time_cnt)= <class 'int'>
+get_pr_dt(): same_time_cnt= 0
+get_pr_dt(): param upd_fm_AIO= False
+get_pr_dt(): RTC current_time= struct_time(tm_year=2022, tm_mon=7, tm_mday=30, tm_hour=10, tm_min=40, tm_sec=0, tm_wday=5, tm_yday=211, tm_isdst=-1)
+get_pr_dt(): Weekday= Saturday
+get_pr_dt(): Updated time: '10:40'
+get_pr_dt(): type(same_time_cnt)= <class 'int'>
+get_pr_dt(): same_time_cnt= 0

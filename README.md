@@ -21,6 +21,10 @@ Note about the strftime 'day of the week' value:
 I discovered that, while the Adafruit IO Time Service response contains a 'day-of-the-week' value that uses 0 as base (Monday = 0),
 while the built-in RTC datetime() function returns a 'day-of-the-week' value that uses 1 as base (Monday = 1)
 
+During the development of this script I have been confronted with the error: 'Refresh too soon'.
+This happened at the moments that the built-in RTC was being synchronized with the data from the Adafruit IO Time Service call response.
+The error happened in function ```get_pr_dt()``` while trying to display the date and time data on the MAGTAG's display. To handle this error I inserted two times a ```try...except``` block.
+
 ```Example:```
 
 Adafruit IO Time Service ```response.text="2022-07-29 23:53:23.081 210 5 +0100 WEST"```

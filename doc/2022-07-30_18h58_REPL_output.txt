@@ -1,0 +1,31 @@
+
+soft reboot
+
+Auto-reload is on. Simply save files over USB to run them or enter REPL to disable.
+code.py output:
+
+Memory Info - gc.mem_free()
+---------------------------
+1975216 Bytes
+
+Flash - os.statvfs('/')
+---------------------------
+Size: 963072 Bytes
+Free: 815616 Bytes
+
+---------------------------
+ESP32-S2 Adafruit IO Time test
+setup():     My MAC address: '...'
+setup():     AP MAC address: '...'
+setup():     Connecting to ...
+setup():     Connected to ...!
+setup():     My IP address is 192.168.1....
+setup():     Ping google.com: 0.030000 ms
+setup():     Fetching text from https://io.adafruit.com/api/v2/<aio_username>/integrations/time/strftime?x-aio-key=<aio_key>&fmt=%25Y-%25m-%25d+%25H%3A%25M%3A%25S.%25L+%25j+%25u+%25z+%25Z
+get_pr_dt(): param upd_fm_AIO= True
+get_pr_dt(): dst= 1
+get_pr_dt(): response.text.split= ['2022-07-30', '18:58:32.942', '211', '6', '+0100', 'WEST']
+get_pr_dt(): sDt= Day of the year: 211, Saturday 2022-07-30 18:58 +0100 WEST
+get_pr_dt(): built-in RTC synchronized from AIO time server
+get_pr_dt(): RTC current_time= struct_time(tm_year=2022, tm_mon=7, tm_mday=30, tm_hour=18, tm_min=58, tm_sec=32, tm_wday=5, tm_yday=211, tm_isdst=-1)
+get_pr_dt(): Weekday= Saturday

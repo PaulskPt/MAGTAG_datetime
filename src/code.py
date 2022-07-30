@@ -158,7 +158,8 @@ def setup():
     aio_key = secrets["aio_key"]
     my_dat.write(_aio_key, aio_key)
     location = secrets.get("timezone", None)
-    TIME_URL = "https://io.adafruit.com/api/v2/%s/integrations/time/strftime?x-aio-key=%s" % (aio_username, aio_key)
+    TIME_URL = "https://io.adafruit.com/api/v2/{:s}/integrations/".format(aio_username)
+    TIME_URL += "time/strftime?x-aio-key={:s}".format(aio_key)
     TIME_URL += "&fmt=%25Y-%25m-%25d+%25H%3A%25M%3A%25S.%25L+%25j+%25u+%25z+%25Z"
     my_dat.write(_time_url, TIME_URL)
     #my_dat.write(_same_time_cnt,0)
@@ -230,6 +231,10 @@ def get_pr_dt(upd_fm_AIO):
             print(TAG+"TIME_URL=", TIME_URL)
         try:
             response = requests.get(TIME_URL)
+            n = response.text.find("error")
+            if n >= 0:
+                print(TAG+"Error {} occurred. Exiting...".format(response.text))
+                raise SystemExit
             if my_debug:
                 print(TAG+"response=", response)
                 print(TAG+"response.text=", response.text)
@@ -277,7 +282,7 @@ def get_pr_dt(upd_fm_AIO):
                 dst = 0
             else:
                 dst = -1
-            if my_debug:
+            if not my_debug:
                 print(TAG+"dst=", dst)
                 print(TAG+"response.text.split=", resp_lst)
             dt = response.text[:10]

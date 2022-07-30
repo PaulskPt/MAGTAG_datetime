@@ -21,7 +21,7 @@
 #    b) https://github.com/adafruit/Adafruit_CircuitPython_Bundle/adafruit-circuitpython-bundle-py-20220312.zip
 # IMPORTANT NOTE !!!
 # Keep the library folder 'Adafruit_portalbase' (containing functions added by me) in the root folder '/',
-# because Adafruit put an Adafruit_portalbase library containing a 'PortalBase' class into 'frozen'
+# because Adafruit put an Adafruit_portalbase library containing a 'PortalBase' module into 'frozen'
 # (this means they are integrated into the circuitpython UF2)
 # and magtag.py has the following import: from Adafruit_portalbase import PortalBase'
 #

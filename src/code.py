@@ -36,7 +36,7 @@ import ssl
 import wifi
 import socketpool
 import adafruit_requests
-    
+
 tm_year = 0
 tm_mon = 1
 tm_mday=2
@@ -196,7 +196,7 @@ def setup():
         print("-" * 40)
         print(TAG+"response.text=",response.text)
         print("-" * 40)
-        
+
     height = magtag.graphics.display.height -1
     width  = magtag.graphics.display.width -1
     my_dat.write(_height, height)
@@ -410,11 +410,11 @@ def main():
 
     while True:
         try:
-            curr_mi = dt_itm(4)
+            curr_mi = dt_itm(tm_min)
             if old_mi != curr_mi:
                 old_mi = curr_mi
                 dummy = get_pr_dt(False)  # get dt from built-in RTC and print
-            curr_hh = dt_itm(3)
+            curr_hh = dt_itm(tm_hour)
             if lStart or old_hh != curr_hh:
                 lStart = False
                 old_hh = curr_hh

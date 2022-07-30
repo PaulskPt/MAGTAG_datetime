@@ -1,4 +1,6 @@
 # 2022-07-30 14h34 PT. Modified the MAGTAG date_and_time script for:
+# (c) 2022 Paulus Schulinck, Github @PaulskPt
+#
 # Updated the CircuitPython firmware to Version 8.0.0-alpha.1
 # Updated all Adafruit CircuitPython libraries uses to the version 8.0 of date 2022-07-30.
 # Using less global variables by introducing a classs my_data.

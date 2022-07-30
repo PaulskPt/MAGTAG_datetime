@@ -44,6 +44,8 @@ The built-in RTC datetime function uses base 0 for the 'day-of-the-week' value. 
 
 I am in contact with the maintainers of Circuitpython about this.
 
+Note: don't forget to fill-in your WiFi and AIO user credentials in the file: ```/src/secrets.py```.
+
 In the ``doc``` folder an example of a REPL output of the script.
 
 Note the script uses a class ```my_dat``` to keep and share various values between functions while preventing the use of global parameters. One of them is ```_debug```. This boolean value is used in various functions to set a local flag ```my_debug```. This boolan flag is used for debugging purposes or for informative REPL output printing.

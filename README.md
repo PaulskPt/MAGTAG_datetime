@@ -19,7 +19,7 @@ The script displays the built-in RTC's datetime data on the MAGTAG display at on
 This version of the original script has various modifications:
 1) This script uses a modified version of adafruit_portalbase/wifi_esp32s2.py. In the file wifi_esp32s2.py I added six functions.
    The adafruit_portalbase module is, for reason, put into the root folder (not in /lib).
-2) Use the response of the Adafruit IO Time Service HTTTP request to filter the needed datetime items to set the built-in RTC of the MAGTAG.
+2) Use the response of the Adafruit IO Time Service HTTP request to filter the needed datetime items to set the built-in RTC of the MAGTAG.
 3) After an initial setting the built-in RTC with the response data of the Adafruit IO Time Service request, the built-in RTC will be polled every minute;
 4) Next, at the change of the hour of the built-in RTC, the buil-tin RTC will be synchronized with fresh Adafruit IO Time Service data
 

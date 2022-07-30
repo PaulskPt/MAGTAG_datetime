@@ -21,7 +21,7 @@ This version of the original script has various modifications:
    The adafruit_portalbase module is, for reason, put into the root folder (not in /lib).
 2) Use the response of the Adafruit IO Time Service HTTP request to filter the needed datetime items to set the built-in RTC of the MAGTAG.
 3) After an initial setting the built-in RTC with the response data of the Adafruit IO Time Service request, the built-in RTC will be polled every minute;
-4) Next, at the change of the hour of the built-in RTC, the buil-tin RTC will be synchronized with fresh Adafruit IO Time Service data
+4) Next, at the change of the hour, the built-in RTC will be synchronized with fresh Adafruit IO Time Service data.
 
 Note about the strftime 'day of the week' value:
 I discovered that, while the Adafruit IO Time Service response contains a 'day-of-the-week' value that uses 0 as base (Monday = 0),

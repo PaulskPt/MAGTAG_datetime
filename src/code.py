@@ -1,5 +1,11 @@
-# 2022-07-29 08h47 PT Try to convert MAGTAG date_and_time script for using less global variables by introducing a my_data class
-# and trying to get rid of regular crashing of the app (maybe because of a memory leak)
+# 2022-07-29 08h47 PT. Modified the MAGTAG date_and_time script for: 
+# using less global variables by introducing a classs my_data.
+# Also trying to get rid of regular crashing of the app (maybe because of a memory leak)
+# Adding algorithm to set, update and use the datetime of the built-in RTC. 
+# The built_in RTC's datetime will be set with data 
+# extracted from the Adafruit IO Time Service response.
+# After initialization at start time, the built-in RTC will be synchronized every hour.
+# The datetime from the built-in RTC will be displayed on the MAGTAG every minute.
 #
 # MagTag date and time circuitpython script
 # modified by @Paulskpt
@@ -283,7 +289,7 @@ def get_pr_dt(upd_fm_AIO):
                 magtag.set_text(s2, 1, auto_refresh = False)
                 magtag.set_text(s3, 2, auto_refresh = False)
                 magtag.display.refresh() # refresh the display
-            
+
             return False
 
         if isinstance(response, type(None)):
@@ -348,7 +354,7 @@ def get_pr_dt(upd_fm_AIO):
         a) after being updated (synchronized) from the AIO time server;
         b) when not synchronized, at a change of a minute value
         Note: the built-in RTC datetime gives always -1 for tm_isdst
-              We determine is_dst from resp_lst[5] extracted from the AIO time server response text 
+              We determine is_dst from resp_lst[5] extracted from the AIO time server response text
     """
     ct = rtc_bi.datetime  # read datetime from built_in RTC
     yy = ct[tm_year]
@@ -366,7 +372,7 @@ def get_pr_dt(upd_fm_AIO):
     tz_off = my_dat.read(_tz_offset)
     sis_dst = my_dat.read(_dst)
     sDt = "Day of the year: {}, {} {:4d}-{:02d}-{:02d}, {:02d}:{:02d} {} {}".format(yd, weekdays[wd], yy, mo, dd, hh, mm, tz_off,sis_dst)
-        
+
         #retval = "{}-{:02d}-{:02d} {:02d}:{:02d}:{:02d} {} {} {} {}".format(yy, mo, dd, hh, mm, ss, yd, wd, tz_off, sis_dst)
 
     if not my_debug:

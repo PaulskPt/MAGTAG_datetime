@@ -13,9 +13,11 @@ a) Adafruit MAGTAG - 2.0 inch Grayscale E-ink WiFi Display (Product ID: 4800) ht
 This script used https://learn.adafruit.com/adafruit-magtag/getting-the-date-time as source.
 
 This version of the latter script has various modifications:
-1) Use the response of the Adafruit IO Time Service HTTTP request to filter the needed datetime items to set the built-in RTC of the MAGTAG.
-2) After an initial setting the built-in RTC with the response data of the Adafruit IO Time Service request, the built-in RTC will be polled every minute;
-3) Next, at the change of the hour of the built-in RTC, the buil-tin RTC will be synchronized with fresh Adafruit IO Time Service data
+1) This script uses a modified version of adafruit_portalbase/wifi_esp32s2.py. In the file wifi_esp32s2.py I added six functions.
+   The adafruit_portalbase module is, for reason, put into the root folder (not in /lib).
+2) Use the response of the Adafruit IO Time Service HTTTP request to filter the needed datetime items to set the built-in RTC of the MAGTAG.
+3) After an initial setting the built-in RTC with the response data of the Adafruit IO Time Service request, the built-in RTC will be polled every minute;
+4) Next, at the change of the hour of the built-in RTC, the buil-tin RTC will be synchronized with fresh Adafruit IO Time Service data
 
 Note about the strftime 'day of the week' value:
 I discovered that, while the Adafruit IO Time Service response contains a 'day-of-the-week' value that uses 0 as base (Monday = 0),

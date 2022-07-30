@@ -1,5 +1,7 @@
-# 2022-07-29 08h47 PT. Modified the MAGTAG date_and_time script for: 
-# using less global variables by introducing a classs my_data.
+# 2022-07-30 14h34 PT. Modified the MAGTAG date_and_time script for:
+# Updated the CircuitPython firmware to Version 8.0.0-alpha.1
+# Updated all Adafruit CircuitPython libraries uses to the version 8.0 of date 2022-07-30.
+# Using less global variables by introducing a classs my_data.
 # Also trying to get rid of regular crashing of the app (maybe because of a memory leak)
 # Adding algorithm to set, update and use the datetime of the built-in RTC. 
 # The built_in RTC's datetime will be set with data 
@@ -256,6 +258,7 @@ def get_pr_dt(upd_fm_AIO):
     TAG = "get_pr_dt(): "
     my_debug = my_dat.read(_debug)
     mm_corr = 1 # Minutes correction because practice revealed the minutes are always 1 behind other (PC)Clocks
+    response = None
 
     if not my_debug:
         print(TAG+"param upd_fm_AIO=", upd_fm_AIO)
@@ -268,11 +271,19 @@ def get_pr_dt(upd_fm_AIO):
             print(TAG+"requests=", requests)
             print(TAG+"TIME_URL=", TIME_URL)
         try:
-            #response = my_wifi.get(TIME_URL)
+            response = my_wifi.get_url(TIME_URL)
+            if not my_debug:
+                print(TAG+"response=", response)
+                print(TAG+"response.text=", response.text)
             if my_debug:
                 print(TAG+"type(requests) = ", type(requests))
-            response = requests.get(TIME_URL)
+            #response = requests.get(TIME_URL)
+            #if not my_debug:
+            #    print(TAG+"response=", response)
             my_dat.write(_response, response)
+        except RuntimeError:
+            print(TAG+"RuntimeError occurred. PASS")
+            pass
         except Exception as e:
             s0 = e.args[0]
             s3 = "               "

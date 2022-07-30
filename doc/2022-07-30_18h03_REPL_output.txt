@@ -1,0 +1,40 @@
+2022-07-30 18h03 UTC+1
+Platform: Adafruit MAGTAG
+
+DateTime from AIO script (modified by @PauskPt
+
+Mu 1.1.0b7 editor REPL output:
+
+
+>>> 
+soft reboot
+
+Auto-reload is on. Simply save files over USB to run them or enter REPL to disable.
+code.py output:
+
+Memory Info - gc.mem_free()
+---------------------------
+1975376 Bytes
+
+Flash - os.statvfs('/')
+---------------------------
+Size: 963072 Bytes
+Free: 815616 Bytes
+
+---------------------------
+ESP32-S2 Adafruit IO Time test
+setup():     My MAC address: '7c:df:a1:15:1f:42'
+setup():     AP MAC address: '7c:df:a1:15:1f:43'
+setup():     Connecting to Vodafone-287778_EXT
+setup():     Connected to Vodafone-287778_EXT!
+setup():     My IP address is 192.168.1.110
+setup():     Ping google.com: 0.026000 ms
+setup():     Fetching text from https://io.adafruit.com/api/v2/paulskpt/integrations/time/strftime?x-aio-key=aio_Vuag05dJN7Es4D7mQzPhcsvK1M1P&fmt=%25Y-%25m-%25d+%25H%3A%25M%3A%25S.%25L+%25j+%25u+%25z+%25Z
+get_pr_dt(): param upd_fm_AIO= True
+get_pr_dt(): sDt= Day of the year: 211, Saturday 2022-07-30 18:03 +0100 WEST
+get_pr_dt(): built-in RTC synchronized from AIO time server
+get_pr_dt(): RTC current_time= struct_time(tm_year=2022, tm_mon=7, tm_mday=30, tm_hour=18, tm_min=3, tm_sec=0, tm_wday=5, tm_yday=211, tm_isdst=-1)
+get_pr_dt(): Weekday= Saturday
+get_pr_dt(): param upd_fm_AIO= False
+get_pr_dt(): RTC current_time= struct_time(tm_year=2022, tm_mon=7, tm_mday=30, tm_hour=18, tm_min=4, tm_sec=0, tm_wday=5, tm_yday=211, tm_isdst=-1)
+get_pr_dt(): Weekday= Saturday
